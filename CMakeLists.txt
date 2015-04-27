@@ -11,14 +11,14 @@ include_directories("./zxing/core/src")
 
 
 set(QTZXING_PUBLIC_HEADERS
-    qrvideosurface.h
-    qrquickitem.h
     qrvideowidget.h
     qrdecoder.h
 )
 
 
 set(QTZXING_PRIVATE_HEADERS
+    qrquickitem.h
+    qrvideosurface.h
     zxingimagesource.h
 )
 
@@ -38,20 +38,30 @@ find_package(Qt5Quick 5 QUIET)
 
 set(QTZXING_QT_MODULES Core Gui Widgets Multimedia)
 
-if (Qt5Quick_FOUND)
-    set(QTZXING_SOURCES qrquickitem.cpp ${QTZXING_SOURCES})
-    set(QTZXING_QT_MODULES Quick ${QTZXING_QT_MODULES})
-endif()
-
 add_library(qtzxing SHARED ${QTZXING_SOURCES})
 
 target_link_libraries(qtzxing libzxing)
 
 install(
-  FILES ${QTZXING_HEADERS}
+  FILES ${QTZXING_PUBLIC_HEADERS}
   DESTINATION include/qtzxing
 )
 
-install (TARGETS qtzxing DESTINATION lib)
+install(TARGETS qtzxing DESTINATION lib)
 
 qt5_use_modules(qtzxing ${QTZXING_QT_MODULES})
+
+
+if(Qt5Quick_FOUND)
+    set(QTZXING_PLUGIN_SOURCES
+        qrquickitem.cpp
+        qtzxing_plugin.cpp
+    )
+    add_library(qtzxing_qml SHARED ${QTZXING_PLUGIN_SOURCES})
+    target_link_libraries(qtzxing_qml qtzxing)
+    qt5_use_modules(qtzxing Quick)
+    install(FILES qmldir DESTINATION plugins/QtZXing)
+    install(TARGETS qtzxing_qml DESTINATION plugins/QtZXing)
+#    set(QTZXING_SOURCES qrquickitem.cpp ${QTZXING_SOURCES})
+#    set(QTZXING_QT_MODULES Quick ${QTZXING_QT_MODULES})
+endif()

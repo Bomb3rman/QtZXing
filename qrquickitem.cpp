@@ -14,7 +14,21 @@ QRQuickItem::QRQuickItem(QQuickItem *parent)
 
 QRQuickItem::~QRQuickItem()
 {
+}
 
+QByteArray QRQuickItem::qrCode()
+{
+    return m_lastQRCode;
+}
+
+void QRQuickItem::startQR()
+{
+    m_surface->startCamera();
+}
+
+void QRQuickItem::stopQR()
+{
+    m_surface->stopCamera();
 }
 
 void QRQuickItem::paint(QPainter * painter)
@@ -31,8 +45,10 @@ void QRQuickItem::paint(QPainter * painter)
                     m_surface->imageFormat());
 
         QByteArray data = QRDecoder::decodeImage(image);
-        if (!data.isEmpty())
+        if (!data.isEmpty()) {
+            m_lastQRCode = data;
             Q_EMIT qrCodeFound(data);
+        }
 
         QRectF targetRect;
         if (((float)image.width()/(float)image.height()) > (float)paintArea.width()/(float)paintArea.height()) {
