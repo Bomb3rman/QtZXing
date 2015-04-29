@@ -34,11 +34,11 @@ set(QTZXING_SOURCES
     qrdecoder.cpp
 )
 
-find_package(Qt5Quick 5 QUIET)
+set(CMAKE_AUTOMOC ON)
 
 set(QTZXING_QT_MODULES Core Gui Widgets Multimedia)
 
-add_library(qtzxing SHARED ${QTZXING_SOURCES})
+add_library(qtzxing ${QTZXING_SOURCES})
 
 target_link_libraries(qtzxing libzxing)
 
@@ -51,7 +51,7 @@ install(TARGETS qtzxing DESTINATION lib)
 
 qt5_use_modules(qtzxing ${QTZXING_QT_MODULES})
 
-
+find_package(Qt5Quick 5 QUIET)
 if(Qt5Quick_FOUND)
     set(QTZXING_PLUGIN_SOURCES
         qrquickitem.cpp
