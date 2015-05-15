@@ -35,6 +35,8 @@ void QRQuickItem::paint(QPainter * painter)
 {
     QRectF paintArea = contentsBoundingRect();
     QVideoFrame currentFrame = m_surface->currentFrame();
+    setImplicitWidth(currentFrame.width());
+    setImplicitHeight(currentFrame.height());
     if (currentFrame.isValid() &&
             currentFrame.map(QAbstractVideoBuffer::ReadOnly)) {
         QImage image(
@@ -62,7 +64,7 @@ void QRQuickItem::paint(QPainter * painter)
             targetRect.setHeight(paintArea.height());
             targetRect.setWidth(targetWidth);
         }
-        qDebug() << targetRect << " " << (float)targetRect.height() / (float)targetRect.width();
+        //qDebug() << targetRect << " " << (float)targetRect.height() / (float)targetRect.width();
         if (!image.isNull()) {
             painter->drawImage(targetRect, image);
         }

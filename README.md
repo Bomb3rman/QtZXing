@@ -4,19 +4,19 @@ The project includes a forked version of the abandoned c++ port of the ZXing lib
 
 Some of the code was "inspired" by QZXing (http://sourceforge.net/projects/qzxing/).
 
-This project offers a lightweight wrapper around ZXing for decoding bar code. It does only offer a subset of the
+This project offers a lightweight wrapper around ZXing for decoding bar-code. It does only offer a subset of the
 ZXing functionality but is very straight forward to use.
 
 For QWidget applications there is a QRVideoWidget. It acts as a viewfinder and QR decoder at the same time.
 
-For QtQuick applications there is a QRQuickItem which just like the widget acts as viewfinder and decode.
+For QtQuick 2 applications there is a QRQuickItem which just like the widget acts as viewfinder and decoder.
 
 This software is a published under the Apache 2.0 license (http://www.apache.org/licenses/LICENSE-2.0).
 
 
-# Buildhttp://sourceforge.net/projects/qzxing/
+# Build
 
-First do a "git submodule update", this will clone the zxing repo. Afterwards invoke cmake and make.
+Make sure the zxing submodule is cloned and up to date. Afterwards invoke cmake and make.
 
 A shared library qtzxing should be created and a QML plugin.
 
@@ -25,7 +25,17 @@ A shared library qtzxing should be created and a QML plugin.
 
 ## QML
 
-"import QtZXing 1.0"
+import QtQuick 2.0
+import QtZXing 1.0
+
+Item {
+    QtZXing {
+        anchors.centerIn: parent
+        width: 400
+        height: 300
+        onQrCodeFound: print("QR Code found")
+        Component.onCompleted: startQR();
+    }
 
 
 ## Widget

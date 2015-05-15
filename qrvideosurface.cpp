@@ -1,5 +1,6 @@
 #include "qrvideosurface.h"
 #include <QCamera>
+#include <QQuickPaintedItem>
 
 #include "zxingimagesource.h"
 
@@ -24,6 +25,7 @@ bool QRVideoSurface::start(const QVideoSurfaceFormat &format)
         QAbstractVideoSurface::start(format);
         return true;
     } else {
+        qDebug() << "Could not start video surface";
         return false;
     }
 }
@@ -33,7 +35,10 @@ bool QRVideoSurface::present(const QVideoFrame &frame)
     m_frame = frame;
     if (qobject_cast<QWidget*>(parent()) != 0) {
         qobject_cast<QWidget*>(parent())->update();
+    } else if (qobject_cast<QQuickPaintedItem*>(parent())) {
+        qobject_cast<QQuickPaintedItem*>(parent())->update();
     }
+
     return true;
 }
 
