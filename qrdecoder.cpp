@@ -10,8 +10,10 @@
 #include "zxing/core/src/zxing/MultiFormatReader.h"
 
 #include <QDebug>
+#include <QtConcurrent/QtConcurrent>
 
-QByteArray QRDecoder::decodeImage(QImage & image)
+
+QByteArray QRDecoder::decodeImage(QImage &image)
 {
     std::vector<zxing::Ref<zxing::Result> > results;
     zxing::Ref<zxing::LuminanceSource> source(new ZXingImageSource(image));
@@ -33,3 +35,7 @@ QByteArray QRDecoder::decodeImage(QImage & image)
     return QByteArray();
 }
 
+QFuture<QByteArray> QRDecoder::decodeImageAsync(QImage &image)
+{
+    return QtConcurrent::run(&QRDecoder::decodeImage, image);
+}

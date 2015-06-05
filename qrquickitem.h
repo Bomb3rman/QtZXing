@@ -2,6 +2,7 @@
 #define QRQUICKITEM_H
 
 #include <QQuickPaintedItem>
+#include <QFutureWatcher>
 
 class QPainter;
 class QRVideoSurface;
@@ -38,6 +39,7 @@ Q_SIGNALS:
 private:
     QRVideoSurface *m_surface;
     QByteArray m_lastQRCode;
+    QFutureWatcher<QByteArray> m_futureWatcher;
 };
 
 #endif // QRQUICKITEM_H

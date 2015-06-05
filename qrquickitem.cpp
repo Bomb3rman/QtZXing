@@ -9,7 +9,13 @@
 QRQuickItem::QRQuickItem(QQuickItem *parent)
     : QQuickPaintedItem(parent), m_surface(new QRVideoSurface(this))
 {
-
+    connect(&m_futureWatcher, &QFutureWatcher<QByteArray>::finished, [&]() {
+        QByteArray data = m_futureWatcher.result();
+        if (!data.isEmpty()) {
+            m_lastQRCode = data;
+            qrCodeFound(m_lastQRCode);
+        }
+    });
 }
 
 QRQuickItem::~QRQuickItem()
@@ -46,10 +52,9 @@ void QRQuickItem::paint(QPainter * painter)
                     currentFrame.bytesPerLine(),
                     m_surface->imageFormat());
 
-        QByteArray data = QRDecoder::decodeImage(image);
-        if (!data.isEmpty()) {
-            m_lastQRCode = data;
-            Q_EMIT qrCodeFound(data);
+        if (!m_futureWatcher.isRunning()) {
+            QFuture<QByteArray> computeFuture = QRDecoder::decodeImageAsync(image);
+            m_futureWatcher.setFuture(computeFuture);
         }
 
         QRectF targetRect;
