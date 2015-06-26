@@ -36,32 +36,30 @@ set(QTZXING_SOURCES
 
 set(CMAKE_AUTOMOC ON)
 
-set(QTZXING_QT_MODULES Core Gui Widgets Multimedia)
-
-add_library(qtzxing ${QTZXING_SOURCES})
-
-target_link_libraries(qtzxing libzxing)
-
 install(
   FILES ${QTZXING_PUBLIC_HEADERS}
   DESTINATION include/qtzxing
 )
 
-install(TARGETS qtzxing DESTINATION lib)
-
-qt5_use_modules(qtzxing ${QTZXING_QT_MODULES})
+set(QTZXING_QT_MODULES Core Gui Widgets Multimedia)
 
 find_package(Qt5Quick 5 QUIET)
 if(Qt5Quick_FOUND)
     set(QTZXING_PLUGIN_SOURCES
-        qrquickitem.cpp
         qtzxing_plugin.cpp
     )
     add_library(qtzxing_qml SHARED ${QTZXING_PLUGIN_SOURCES})
     target_link_libraries(qtzxing_qml qtzxing)
-    qt5_use_modules(qtzxing Quick)
     install(FILES qmldir DESTINATION plugins/QtZXing)
     install(TARGETS qtzxing_qml DESTINATION plugins/QtZXing)
-#    set(QTZXING_SOURCES qrquickitem.cpp ${QTZXING_SOURCES})
-#    set(QTZXING_QT_MODULES Quick ${QTZXING_QT_MODULES})
+    set(QTZXING_SOURCES qrquickitem.cpp ${QTZXING_SOURCES})
+    set(QTZXING_QT_MODULES Quick ${QTZXING_QT_MODULES})
 endif()
+
+add_library(qtzxing ${QTZXING_SOURCES})
+
+target_link_libraries(qtzxing libzxing)
+
+qt5_use_modules(qtzxing ${QTZXING_QT_MODULES})
+
+install(TARGETS qtzxing DESTINATION lib)
